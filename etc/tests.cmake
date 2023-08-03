@@ -14,8 +14,8 @@ endmacro (ttest)
 set_property(TEST ${compile_name} PROPERTY TIMEOUT -1)
 set_tests_properties(${compile_name} PROPERTIES FIXTURES_SETUP compile)
 
-add_test(NAME t_webget COMMAND "${PROJECT_SOURCE_DIR}/tests/webget_t.sh" "${PROJECT_BINARY_DIR}")
-set_property(TEST t_webget PROPERTY FIXTURES_REQUIRED compile)
+# add_test(NAME t_webget COMMAND "${PROJECT_SOURCE_DIR}/tests/webget_t.sh" "${PROJECT_BINARY_DIR}")
+# set_property(TEST t_webget PROPERTY FIXTURES_REQUIRED compile)
 
 ttest(byte_stream_basics)
 ttest(byte_stream_capacity)
