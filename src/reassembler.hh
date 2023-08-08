@@ -5,6 +5,8 @@
 #include <set>
 #include <string>
 
+#define REASSEMBLER_0
+
 class Reassembler
 {
 public:
@@ -34,6 +36,7 @@ public:
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
 
+#ifdef REASSEMBLER_0
   struct info
   {
     uint64_t l_, r_;
@@ -44,10 +47,21 @@ public:
     bool in_range( uint64_t x );
     bool operator<( const info& other ) const;
   };
-
 private:
   std::set<info> memory_;
   uint64_t bytes_pending_;
   uint64_t eof_index_;
   bool eof_flag_;
+#endif
+
+#ifdef REASSEMBLER_1
+  
+private:
+  std::vector<uint16_t> buffer_;
+  uint64_t capacity_;
+  uint64_t bytes_pending_;
+  uint64_t start_index_;
+  uint64_t eof_index_;
+  bool eof_flag_;
+#endif
 };
