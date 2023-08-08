@@ -19,10 +19,10 @@ void get_URL( const string& host, const string& path )
   socket.write( "HOST: " + host + "\r\n" );
   socket.write( "Connection: close\r\n" );
   socket.write( "\r\n" );
-  while(!socket.eof()) {
+  while ( !socket.eof() ) {
     vector<unique_ptr<string>> ans;
-    socket.read(ans);
-    for (auto& it : ans) {
+    socket.read( ans );
+    for ( auto& it : ans ) {
       cout << *it << endl;
     }
   }

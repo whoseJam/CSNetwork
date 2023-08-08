@@ -5,15 +5,23 @@
 using namespace std;
 
 ByteStream::ByteStream( uint64_t capacity )
-  : capacity_( capacity ), buffer_( capacity ), error_( false ), closed_( false ), total_pushed_( 0 ), total_poped_( 0 )
+  : capacity_( capacity )
+  , buffer_( capacity )
+  , error_( false )
+  , closed_( false )
+  , total_pushed_( 0 )
+  , total_poped_( 0 )
+  , front_( 0 )
+  , back_( 0 )
 {}
 
 void Writer::push( string data )
 {
   for ( auto i : data ) {
     if ( total_pushed_ - total_poped_ < capacity_ ) {
-      buffer_[total_pushed_%capacity_] = i;
+      buffer_[back_] = i;
       total_pushed_++;
+      back_ = (back_ != capacity_ - 1) ? back_ + 1 : 0;
     } else {
       break;
     }
@@ -37,7 +45,7 @@ bool Writer::is_closed() const
 
 uint64_t Writer::available_capacity() const
 {
-  return capacity_ - (total_pushed_ - total_poped_);
+  return capacity_ - ( total_pushed_ - total_poped_ );
 }
 
 uint64_t Writer::bytes_pushed() const
@@ -47,7 +55,11 @@ uint64_t Writer::bytes_pushed() const
 
 string_view Reader::peek() const
 {
-  return string_view(&buffer_[total_poped_%capacity_], 1);
+  if (bytes_buffered() == 0)
+    return string_view( &buffer_[front_], 0);
+  if (front_ < back_)
+    return string_view( &buffer_[front_], back_ - front_);
+  return string_view( &buffer_[front_], capacity_ - front_);
 }
 
 bool Reader::is_finished() const
@@ -63,9 +75,8 @@ bool Reader::has_error() const
 void Reader::pop( uint64_t len )
 {
   len = min( len, bytes_buffered() );
-  for ( uint64_t i = 0; i < len; i++ ) {
-    total_poped_++;
-  }
+  total_poped_ += len;
+  front_ = (front_ + len) % capacity_;
 }
 
 uint64_t Reader::bytes_buffered() const

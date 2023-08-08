@@ -2,11 +2,13 @@
 
 #include "byte_stream.hh"
 
+#include <set>
 #include <string>
 
 class Reassembler
 {
 public:
+  Reassembler();
   /*
    * Insert a new substring to be reassembled into a ByteStream.
    *   `first_index`: the index of the first byte of the substring
@@ -31,4 +33,21 @@ public:
 
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
+
+  struct info
+  {
+    uint64_t l_, r_;
+    std::string data_;
+    info( uint64_t l, uint64_t r, std::string&& data );
+    info( info&& other );
+    info( const info& other );
+    bool in_range( uint64_t x );
+    bool operator<( const info& other ) const;
+  };
+
+private:
+  std::set<info> memory_;
+  uint64_t bytes_pending_;
+  uint64_t eof_index_;
+  bool eof_flag_;
 };

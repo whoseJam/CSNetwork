@@ -18,6 +18,8 @@ protected:
   bool closed_;
   uint64_t total_pushed_;
   uint64_t total_poped_;
+  uint64_t front_;
+  uint64_t back_;
 
 public:
   explicit ByteStream( uint64_t capacity );
