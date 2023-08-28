@@ -48,7 +48,7 @@ public:
     bool operator<( const info& other ) const;
   };
 private:
-  std::set<info> memory_;
+  std::multiset<info> memory_;
   uint64_t bytes_pending_;
   uint64_t eof_index_;
   bool eof_flag_;

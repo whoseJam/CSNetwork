@@ -1,4 +1,5 @@
 #include "reassembler.hh"
+#include <iostream>
 
 using namespace std;
 
@@ -39,7 +40,7 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   if ( l < r ) {
     Info ii = { l, r, data.substr( l - first_index, r - l ) };
     bytes_pending_ += ii.data_.length();
-    auto iter = memory_.insert( move( ii ) ).first;
+    auto iter = memory_.insert( move( ii ) );
     if ( iter != memory_.begin() ) {
       auto prev = iter;
       prev--;
@@ -68,8 +69,13 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
     bytes_pending_ -= iter->data_.length();
     iter = memory_.erase( iter );
   }
-  if ( output.bytes_pushed() == eof_index_ && eof_flag_ )
+
+  cout<<"byte pushed="<<output.bytes_pushed()<<" eof="<<eof_index_<<" first="
+  <<first_index<<" datalength="<<data.length()<<" last="<<is_last_substring<<endl;
+  if ( output.bytes_pushed() == eof_index_ && eof_flag_ ) {
     output.close();
+    cout<<"closed\n";
+  }
 }
 
 uint64_t Reassembler::bytes_pending() const
